@@ -14,16 +14,11 @@ const connect = () => {
     db.sequelize = sequelize;
 
     db.user = require("./models/user.model")(sequelize, DataTypes, Model);
+    db.session = require("./models/sessions.model")(sequelize,DataTypes, Model)
 
     // Relationships
-    // db.user.hasMany(db.trip,{as:"MyTrips"})
-    // db.trip.belongsTo(db.user,{as:"Leader"})
-
-    // db.trip.belongsToMany(db.user,{through:'tripMember',as:"Members"})
-    // db.user.belongsToMany(db.trip,{through:'tripMember',as:"Trips"})
-
-    // db.trip.hasMany(db.stops,{as:'Stops'})
-    // db.stops.belongsTo(db.trip)
+    db.user.hasMany(db.session,{as:"Sessions"})
+    db.session.belongsTo(db.user,{as:"User"})
     
     return db;
 }

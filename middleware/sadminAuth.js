@@ -8,7 +8,7 @@ const sadminAuth = async (req, res, next) => {
         const user = jwt.verify(req.headers.token, process.env.JWT_SECRET)
 
         if(user.type=='sadmin'||user.email==req.body.email){
-            req.user = data
+            req.user = user
             next()
         }
         else{

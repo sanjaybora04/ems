@@ -3,11 +3,11 @@ const jwt = require('jsonwebtoken')
 /**
  * Decrypt JWT token
  */
-const adminAuth = async (req, res, next) => {
+const employeeAuth = async (req, res, next) => {
     try {
         const user = jwt.verify(req.headers.token, process.env.JWT_SECRET)
 
-        if(['admin','sadmin'].includes(user.type)||user.email==req.body.email){
+        if(user.type=='employee'){
             req.user = user
             next()
         }
@@ -20,4 +20,4 @@ const adminAuth = async (req, res, next) => {
     }
 }
 
-module.exports = adminAuth;
+module.exports = employeeAuth;

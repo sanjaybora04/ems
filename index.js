@@ -3,7 +3,9 @@ const express = require('express');
 const cors = require('cors');
 
 //Root routes
-const user = require('./routes/user');
+const auth = require('./routes/auth');
+const admin = require('./routes/admin');
+const employee = require('./routes/employee');
 
 
 const app = express();
@@ -14,7 +16,9 @@ app.use(express.json())
 
 
 // Routes
-app.use('/',user)
+app.use('/',auth)
+app.use('/',admin)
+app.use('/',employee)
 
 
 app.listen(process.env.PORT,()=>{
