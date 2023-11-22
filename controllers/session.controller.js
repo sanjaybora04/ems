@@ -1,7 +1,7 @@
 const { connect } = require('../db/db');
 
 
-class EmployeeController {
+class SessionController {
 
     db = {};
 
@@ -10,74 +10,21 @@ class EmployeeController {
         // this.db.sequelize.sync({force:true});
     }
 
-    /**
-     * Add  new employee
-     * @param {String} email 
-     * @param {String} password 
-     * @param {String} name 
-     */
-    async create(email, password, name) {
-        try {
-            const user = await this.db.user.create({
-                email,
-                password,
-                name,
-                type: 'employee'
-            })
-            return ({ success: "Employee Created" })
-        } catch (err) {
-            console.log(err)
-            return ({ error: "Create Employee: Internal Server Error" })
-        }
-    }
-
-    /**
-     * Delete Employee
-     * @param {String} email 
-     * @returns 
-     */
-    async delete(email) {
-        try {
-            const user = await this.db.user.findOne({ where: { email } })
-            if (user.type === 'employee') {
-                await user.destroy()
-                return ({ success: "Employee Deleted" })
-            }
-            else {
-                return ({ warning: "User is not an Employee" })
-            }
-        } catch (err) {
-            console.log(err)
-            return ({ success: "Delete Employee: Internal Server Error" })
-        }
-    }
-
-    /**
-     * Update Employee
-     */
-    async update(email, data) {
-        try {
-            const user = await this.db.user.findOne({ where: { email } })
-            if (user.type === 'employee') {
-                await user.update(data)
-            } else {
-                return ({ warning: "User is not an Employee" })
-            }
-        } catch (err) {
-            console.log(err)
-            return ({ error: "Update Admin: Internal Server Error" })
-        }
-    }
 
     /**
      * Start Session
      */
-    async startSession(email) {                 // Todo: check if a session has already been created; only one session can be created in one day
+    async start(email) {                 // Todo: check if a session has already been created; only one session can be created in one day
         try {
             const user = await this.db.user.findOne({ where: { email } })
-            const session = await user.createSession({ startTime: Date.now() })
-            await session.setUser(user)
-            return ({ success: "Session Started" })
+            const currentSession = await user.getSessions({where:{endTime:null}})
+            if(currentSession[0]){
+                return ({ warning: "A Session is already active"})
+            }else{
+                const session = await user.createSession({ startTime: Date.now() })
+                await session.setUser(user)
+                return ({ success: "Session Started" })
+            }
         } catch (err) {
             console.log(err)
             return ({ error: "Start Session: Internal Server Error" })
@@ -87,12 +34,12 @@ class EmployeeController {
     /**
      * End Session
      */
-    async endSession(email) {
+    async end(email) {
         try {
             const user = await this.db.user.findOne({ where: { email } })
             const session = await user.getSessions({
                 where: {            // Todo : find session that was created today
-                    data: null
+                    endTime: null
                 }
             })
             if(session[0]){
@@ -109,12 +56,12 @@ class EmployeeController {
     /**
      * Pause Session
      */
-    async pauseSession(email) {
+    async pause(email) {
         try {
             const user = await this.db.user.findOne({ where: { email } })
             const session = await user.getSessions({
                 where: {
-                    data: null
+                    endTime: null
                 }
             })
 
@@ -144,12 +91,12 @@ class EmployeeController {
         }
     }
 
-    async resumeSession(email) {
+    async resume(email) {
         try {
             const user = await this.db.user.findOne({ where: { email } })
             const session = await user.getSessions({
                 where: {
-                    data: null
+                    endTime: null
                 }
             })
             
@@ -180,13 +127,6 @@ class EmployeeController {
         }
     }
 
-    /**
-     * Enter logs
-     */
-    async updateLog(){
-        
-    }
-
 }
 
-module.exports = new EmployeeController();
+module.exports = new SessionController();

@@ -1,12 +1,12 @@
 module.exports = (sequelize, DataTypes, Model) => {
 
-    class Users extends Model { }
+    class User extends Model { }
 
-    Users.init({
+    User.init({
         // Model attributes are defined here
         email: {
             type: DataTypes.STRING,
-            allowNull: false
+            primaryKey: true
         },
         password: {
             type: DataTypes.STRING,
@@ -26,5 +26,5 @@ module.exports = (sequelize, DataTypes, Model) => {
         modelName: 'users' // We need to choose the model name
     });
 
-    return Users;
+    return User;
 }

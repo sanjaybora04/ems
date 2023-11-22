@@ -1,4 +1,3 @@
-const path = require('path')
 const express = require('express');
 const cors = require('cors');
 
@@ -6,6 +5,7 @@ const cors = require('cors');
 const auth = require('./routes/auth');
 const admin = require('./routes/admin');
 const employee = require('./routes/employee');
+const session = require('./routes/session');
 
 
 const app = express();
@@ -17,8 +17,9 @@ app.use(express.json())
 
 // Routes
 app.use('/',auth)
-app.use('/',admin)
-app.use('/',employee)
+app.use('/admin/',admin)
+app.use('/employee/',employee)
+app.use('/session/',session)
 
 
 app.listen(process.env.PORT,()=>{

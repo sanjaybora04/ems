@@ -17,7 +17,7 @@ class AdminController {
      * @param {String} password 
      * @param {String} name 
      */
-    async createAdmin(email,password,name) {
+    async create(email,password,name) {
         try {
             const user = await this.db.user.create({
                 email,
@@ -37,7 +37,7 @@ class AdminController {
      * @param {String} email 
      * @returns 
      */
-    async deleteAdmin(email){
+    async delete(email){
         try{
             const user = await this.db.user.findOne({where:{email}})
             if(user.type === 'admin'){
@@ -56,7 +56,7 @@ class AdminController {
     /**
      * Update Admin
      */
-    async updateAdmin(email,data){
+    async update(email,data){
         try{
             const user = await this.db.user.findOne({where:{email}})
             if(user.type=='admin'){

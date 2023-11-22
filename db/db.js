@@ -14,11 +14,15 @@ const connect = () => {
     db.sequelize = sequelize;
 
     db.user = require("./models/user.model")(sequelize, DataTypes, Model);
-    db.session = require("./models/sessions.model")(sequelize,DataTypes, Model)
+    db.session = require("./models/session.model")(sequelize, DataTypes, Model)
+    db.project = require("./models/project.model")(sequelize, DataTypes, Model)
 
     // Relationships
     db.user.hasMany(db.session,{as:"Sessions"})
     db.session.belongsTo(db.user,{as:"User"})
+
+    db.user.belongsToMany(db.project,{through:"userProject",as:'Projects'})
+    db.project.belongsToMany(db.user,{through:"userProject",as:'Employees'})
     
     return db;
 }
